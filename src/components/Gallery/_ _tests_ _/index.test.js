@@ -1,15 +1,25 @@
-import React from 'react';
-import PhotoList from '../PhotoList';
-import { capitalizeFirstLetter } from '../../utils/helpers';
+// __tests__/Gallery.test.js
+import React from 'react'
+import { render, cleanup } from '@testing-library/react'
+import '@testing-library/jest-dom/extend-expect'
+import Gallery from '..'
+const portrait = { name: "portraits", description: "Portraits of people in my life" };
 
-function Gallery(props) {
-  const { currentCategory } = props;
-  return (
-    <section>
-      <h1 data-testid="h1tag">{capitalizeFirstLetter(currentCategory.name)}</h1>
-      <p>{currentCategory.description}</p>
-      <PhotoList category={currentCategory.name} />
-    </section>
-  );
-}
-export default Gallery;
+afterEach(cleanup)
+
+describe('Gallery component', () => {
+
+  it('renders', () => {
+    render(<Gallery currentCategory={portrait} />);
+  });
+
+  it('matches snapshot', () => {
+    const { asFragment } = render(<Gallery currentCategory={portrait} />)
+    expect(asFragment()).toMatchSnapshot()
+  })
+});
+
+it('renders', () => {
+  const { getByTestId } = render(<Gallery currentCategory={portrait} />)
+  expect(getByTestId('h1tag')).toHaveTextContent('Portraits')
+})
